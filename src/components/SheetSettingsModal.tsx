@@ -9,6 +9,7 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import { User } from 'firebase/auth';
+import appConfig from '../config/appConfig.json';
 import {
   getAppsScriptUrl,
   saveAppsScriptUrl,
@@ -45,22 +46,23 @@ export const SheetSettingsModal: React.FC<SheetSettingsModalProps> = ({
   selectedTab = 'Sheet2',
   onUpdateSelectedTab,
 }) => {
-  const [inputVal, setInputVal] = useState(spreadsheetId);
-  const [tabVal, setTabVal] = useState(selectedTab);
-  const [scriptUrl, setScriptUrl] = useState(getAppsScriptUrl());
+  const [inputVal, setInputVal] = useState(spreadsheetId || appConfig.spreadsheetId || '');
+  const [tabVal, setTabVal] = useState(selectedTab || appConfig.orderSheetTab || 'Sheet2');
+  const [scriptUrl, setScriptUrl] = useState(getAppsScriptUrl() || appConfig.appsScriptUrl || '');
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
   useEffect(() => {
-    setInputVal(spreadsheetId);
+    setInputVal(spreadsheetId || appConfig.spreadsheetId || '');
   }, [spreadsheetId]);
 
   useEffect(() => {
-    setTabVal(selectedTab);
+    setTabVal(selectedTab || appConfig.orderSheetTab || 'Sheet2');
   }, [selectedTab]);
 
   useEffect(() => {
-    setScriptUrl(getAppsScriptUrl());
+    const curScript = getAppsScriptUrl() || appConfig.appsScriptUrl || '';
+    setScriptUrl(curScript);
     // Also fetch current config from backend server if available
     fetch('/api/config')
       .then((r) => {
@@ -70,7 +72,7 @@ export const SheetSettingsModal: React.FC<SheetSettingsModalProps> = ({
       })
       .then((cfg) => {
         if (!cfg) return;
-        if (cfg?.spreadsheetId && !spreadsheetId) {
+        if (cfg?.spreadsheetId) {
           setInputVal(cfg.spreadsheetId);
         }
         if (cfg?.appsScriptUrl) {
@@ -91,11 +93,14 @@ export const SheetSettingsModal: React.FC<SheetSettingsModalProps> = ({
 
     // 1. Update React state & localStorage
     onUpdateSpreadsheetId(cleanSheetId);
+    localStorage.setItem('app_spreadsheet_id', cleanSheetId);
     if (onUpdateSelectedTab && cleanTab) {
       onUpdateSelectedTab(cleanTab);
+      localStorage.setItem('order_sheet_tab', cleanTab);
     }
     if (cleanUrl) {
       saveAppsScriptUrl(cleanUrl);
+      localStorage.setItem('apps_script_url', cleanUrl);
     }
 
     // 2. Permanently save into source code files via backend API

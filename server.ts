@@ -26,8 +26,8 @@ async function startServer() {
       console.error('Error reading appConfig.json:', e);
     }
     return res.json({
-      spreadsheetId: '11pI2WGa6yr70R0Sf9jrTDaKlds754qH8oqw-XWS9yZ8',
-      appsScriptUrl: 'https://script.google.com/macros/s/AKfycbz2d-zKPTuqpSndp2zw-vjlXyEDbFSK-bwbkBdyXfXlk8PwzNuhp5ytIzowXTHkP_smBw/exec',
+      spreadsheetId: '1Mt_gbSR3p7hvTGgQ5fXq5MjlECwbKiQGfwPvRkOIXVo',
+      appsScriptUrl: 'https://script.google.com/macros/s/AKfycbxMRclYJPcwLfyqNsGkMJoC-foY321YO9V-WBRJnCT2dNsOZHxDpEEPt6MBqTNDBP6iUg/exec',
       orderSheetTab: 'Sheet2',
     });
   });

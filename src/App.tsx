@@ -198,6 +198,18 @@ export default function App() {
 
   // Spreadsheet ID
   const [spreadsheetId, setSpreadsheetId] = useState<string>(() => {
+    const savedCodeVersion = localStorage.getItem('app_config_updated_at');
+    const currentCodeVersion = appConfig.updatedAt || '';
+    if (currentCodeVersion && currentCodeVersion !== savedCodeVersion) {
+      if (appConfig.spreadsheetId) {
+        localStorage.setItem('app_spreadsheet_id', appConfig.spreadsheetId);
+      }
+      if (appConfig.appsScriptUrl) {
+        localStorage.setItem('apps_script_url', appConfig.appsScriptUrl);
+      }
+      localStorage.setItem('app_config_updated_at', currentCodeVersion);
+      return appConfig.spreadsheetId || DEFAULT_SPREADSHEET_ID;
+    }
     const saved = localStorage.getItem('app_spreadsheet_id');
     if (saved && saved.trim()) {
       return saved.trim();

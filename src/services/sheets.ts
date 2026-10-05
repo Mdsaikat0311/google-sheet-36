@@ -1211,10 +1211,17 @@ export const DEFAULT_APPS_SCRIPT_URL = appConfig.appsScriptUrl || 'https://scrip
 
 export const getAppsScriptUrl = (): string => {
   if (typeof window !== 'undefined') {
+    const savedCodeVersion = localStorage.getItem('app_config_updated_at');
+    const currentCodeVersion = appConfig.updatedAt || '';
+    if (currentCodeVersion && currentCodeVersion !== savedCodeVersion && appConfig.appsScriptUrl) {
+      localStorage.setItem('apps_script_url', appConfig.appsScriptUrl.trim());
+      localStorage.setItem('app_config_updated_at', currentCodeVersion);
+      return appConfig.appsScriptUrl.trim();
+    }
     const saved = localStorage.getItem('apps_script_url');
     if (saved && saved.trim()) return saved.trim();
   }
-  return DEFAULT_APPS_SCRIPT_URL;
+  return appConfig.appsScriptUrl || DEFAULT_APPS_SCRIPT_URL;
 };
 
 export const saveAppsScriptUrl = (url: string) => {
@@ -2237,7 +2244,7 @@ export const updateSheetCustomerDetails = async (
 /**
  * Complete, copy-pasteable Google Apps Script code for the user's Sheet2
  */
-export const COMPLETE_APPS_SCRIPT_CODE = `const SPREADSHEET_ID = "11pI2WGa6yr70R0Sf9jrTDaKlds754qH8oqw-XWS9yZ8";
+export const COMPLETE_APPS_SCRIPT_CODE = `const SPREADSHEET_ID = "${appConfig.spreadsheetId || '1Mt_gbSR3p7hvTGgQ5fXq5MjlECwbKiQGfwPvRkOIXVo'}";
 const SHEET_NAME = "Sheet2";
 
 // Column Index Mapping (1-based index)
